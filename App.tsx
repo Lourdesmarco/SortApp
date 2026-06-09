@@ -33,7 +33,7 @@ export default function App() {
   const systemScheme = useColorScheme();
   const [isDark, setIsDark] = useState<boolean>(systemScheme === 'dark');
   const [text, setText] = useState<string>('Acerca una tarjeta NFC');
-  const [status, setStatus] = useState<string>('esperando');
+  const [_status, setStatus] = useState<string>('esperando');
   const [showWriteCard, setShowWriteCard] = useState(false);
   const isReadingRef = useRef(true);
 
@@ -45,7 +45,8 @@ export default function App() {
     return () => {
       NfcManager.cancelTechnologyRequest().catch(() => {});
     };
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [  ]);
 
   const initNfc = async () => {
     try {
@@ -67,6 +68,7 @@ export default function App() {
       if (!payload) return 'Esa tarjeta no es válida';
 
       // quitar idioma (primeros bytes típicos NDEF)
+      // eslint-disable-next-line @typescript-eslint/no-shadow
       const text = String.fromCharCode(...payload.slice(3));
 
       return text;
