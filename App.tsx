@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import WriteCard from './src/components/WriteCard';
+import GroupManager, {Group} from './src/components/GroupManager';
 import Svg, {Path} from 'react-native-svg';
 
 const lightTheme = {
@@ -35,6 +36,8 @@ export default function App() {
   const [text, setText] = useState<string>('Acerca una tarjeta NFC');
   const [_status, setStatus] = useState<string>('esperando');
   const [showWriteCard, setShowWriteCard] = useState(false);
+  const [showGroupManager, setShowGroupManager] = useState(false);
+  const [groups, setGroups] = useState<Group[]>([]);
   const isReadingRef = useRef(true);
 
   const theme = isDark ? darkTheme : lightTheme;
@@ -130,6 +133,19 @@ export default function App() {
     }, 500);
   };
 
+  const handleOpenGroups = () => {
+    isReadingRef.current = false;
+    setShowGroupManager(true);
+  };
+
+  const handleCloseGroups = () => {
+    setShowGroupManager(false);
+    isReadingRef.current = true;
+    setTimeout(() => {
+      readTag();
+    }, 500);
+  };
+
   return (
     <View style={[styles.container, {backgroundColor: theme.bg}]}>
       <TouchableOpacity
@@ -179,6 +195,23 @@ export default function App() {
         </Svg>
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={[styles.groups, {backgroundColor: theme.button}]}
+        onPress={handleOpenGroups}
+        accessibilityRole="button"
+        accessibilityLabel="Grupos">
+        <Svg viewBox="0 0 24 24" width={22} height={22}>
+          <Path
+            d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
+            stroke={theme.buttonText}
+            strokeWidth={1.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+        </Svg>
+      </TouchableOpacity>
+
       <Text
         style={[styles.text, {color: theme.text}]}
         accessible={true}
@@ -188,6 +221,14 @@ export default function App() {
 
       {showWriteCard && (
         <WriteCard theme={theme} onCancel={handleCloseWrite} />
+      )}
+      {showGroupManager && (
+        <GroupManager
+          theme={theme}
+          groups={groups}
+          setGroups={setGroups}
+          onClose={handleCloseGroups}
+        />
       )}
     </View>
   );
@@ -214,6 +255,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 40,
     left: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  groups: {
+    position: 'absolute',
+    top: 40,
+    left: 74,
     width: 44,
     height: 44,
     borderRadius: 22,

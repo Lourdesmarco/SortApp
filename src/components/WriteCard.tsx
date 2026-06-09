@@ -8,6 +8,7 @@ import {
   AccessibilityInfo,
 } from 'react-native';
 import NfcManager, {NfcTech, Ndef} from 'react-native-nfc-manager';
+import Svg, {Path} from 'react-native-svg';
 
 interface Props {
   theme: {bg: string; text: string; button: string; buttonText: string; buttonPrimary: string; buttonTextPrimary: string;};
@@ -56,6 +57,23 @@ export default function WriteCard({theme, onCancel}: Props) {
           autoFocus
         />
 
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={onCancel}
+          accessibilityRole="button"
+          accessibilityLabel="Cerrar">
+          <Svg viewBox="0 0 24 24" width={22} height={22}>
+            <Path
+              d="M6 18 18 6M6 6l12 12"
+              stroke={theme.text}
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          </Svg>
+        </TouchableOpacity>
+
         <View style={styles.buttons}>
           <TouchableOpacity
             style={[styles.button, {backgroundColor: theme.buttonPrimary}]}
@@ -64,16 +82,6 @@ export default function WriteCard({theme, onCancel}: Props) {
             accessibilityLabel="Guardar">
             <Text style={[styles.buttonText, {color: theme.buttonTextPrimary}]}>
               Guardar
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, {backgroundColor: theme.button}]}
-            onPress={onCancel}
-            accessibilityRole="button"
-            accessibilityLabel="Cancelar">
-            <Text style={[styles.buttonText, {color: theme.buttonText}]}>
-              Cancelar
             </Text>
           </TouchableOpacity>
         </View>
@@ -112,6 +120,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     minHeight: 40,
     marginBottom: 20,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttons: {
     flexDirection: 'row',
